@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 
 class Utilisateur(AbstractUser):
     user_id = models.CharField(max_length=8, primary_key=True)
-    email = models.EmailField(unique = True, null=False, blank=False)
+    email = models.EmailField(unique = True)
     telephone = models.CharField(max_length = 15, null=True, blank=True)
     role = models.CharField(max_length=20, choices=[
         ('admin', 'Admin'),

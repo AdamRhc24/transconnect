@@ -20,4 +20,4 @@ class Vehicule(models.Model):
         Entreprise,
         on_delete=models.CASCADE,
         related_name='vehicules'
-    )   
+    )
