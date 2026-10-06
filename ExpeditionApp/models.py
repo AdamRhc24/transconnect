@@ -33,9 +33,8 @@ class Expedition(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.reference:
-            count = Expedition.objects.count() + 1
-            self.reference = f"EXP-{count:04d}"
-        
+            self.reference = self._generate_ref()
+        self.full_clean()
         super().save(*args, **kwargs)
 
 
@@ -52,4 +51,10 @@ class Expedition(models.Model):
         prefix = f"EXP_{annee}_"
 
 
-        compteur = cls.objects.filter(reference_startswith=prefix).order_by('-reference').last()
+        deriner = (cls.objects.filter(reference_startswith=prefix).order_by('-reference').last())
+
+        compteur = int(deriner.reference[-5: ]+1 if deriner else 1)
+        if compteur >99999:
+            raise ValidationError('Limit_exceeded')
+
+        return f'{prefix}{compteur:05d}'

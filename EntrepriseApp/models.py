@@ -40,10 +40,8 @@ class Entreprise(models.Model):
         ('transporteur', 'Transporteur')
     ],  default='char')
 
-    adresse = models.TextField(MinLengthValidator(20, message="L'adresse doit contenir au moins 20 caractères"),
-                               MaxLengthValidator(300, message="L'adresse ne peut pas dépasser 300 caractères")
-                               
-                               )
+    adresse = models.TextField(validators=[MinLengthValidator(20, message="L'adresse doit contenir au moins 20 caractères"),
+                                          MaxLengthValidator(300, message="L'adresse ne peut pas dépasser 300 caractères")])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
