@@ -1,5 +1,6 @@
 from django.db import models
 from EntrepriseApp.models import Entreprise
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 
@@ -11,7 +12,7 @@ class Vehicule(models.Model):
         ('camion porteur', 'Camion Proteur'),
         ('semi-remorque', 'Semi-remorque')
     ], default = 'camionnette', blank=False, null=False)
-    capacite_kg = models.IntegerField()
+    capacite_kg = models.IntegerField(validators=[MinValueValidator(100, message="La capacité doit être d'au moins 100 kg")])
     disponible = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
