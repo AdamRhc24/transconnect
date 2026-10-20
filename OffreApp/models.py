@@ -66,26 +66,27 @@ class Offre(models.Model):
         if self.vehicule and self.vehicule.disponible == False:
             raise ValidationError({'vehicule': "Le vehicule n'est pas disponible pour une nouvelle offre"})
         # Regle 7
-        if self.vehicule_id and not self.expedition_id:
+        if self.vehicule_id and self.expedition_id:
             poids = self.expedition.poids_kg
             type_vehicule = self.vehicule.type_vehicule
             if type_vehicule == 'camionnette' and poids > 1500:
-                raise ValidationError({'vehicule': "Le poids de l'expedition dépasse la capacité maximale d'une camionnette (3 500 kg)"})
+                raise ValidationError({'vehicule': "Le poids de l'expedition dépasse la capacité maximale d'une camionnette (1 500 kg)"})
             if type_vehicule == 'fourgon' and poids > 3500:
                 raise ValidationError({'vehicule': "Le poids de l'expedition dépasse la capacité maximale d'un fourgon (3 500 kg)"})
-            if type_vehicule == 'camion_porteur' and (poids<3500 or poids > 19000):
+            if type_vehicule == 'camion_porteur' and (poids < 3500 or poids > 19000):
                 raise ValidationError({'vehicule': "Le poids de l'expedition n'est pas compatible avec un camion porteur (3 500 à 19 000 kg)"})
-            if type_vehicule == 'semi_remorque' and (poids<1900 or poids > 26000):
-                raise ValidationError({'vehicule': "Le poids de l'expedition n'est pas compatible avec une semi-remorque (19 000 à 26 000 kg)"})
+            if type_vehicule == 'semi_remorque' and (poids < 1900 or poids > 26000):
+                raise ValidationError({'vehicule': "Le poids de l'expedition n'est pas compatible avec une semi-remorque (1 900 à 26 000 kg)"})
 
-            
     def save(self, *args, **kwargs):
         self.full_clean()
+        if self.statut == 'acceptee' and self.pk:
+            original = Offre.objects.get(pk=self.pk)
+            if original.statut != 'acceptee':
+                self.expedition.statut = 'attribuee'
+                self.expedition.save()
+                Offre.objects.filter(expedition_id=self.expedition_id, statut='proposee').exclude(pk=self.pk).update(statut='refusee')
         super().save(*args, **kwargs)
-        if self.statut == 'acceptee' :
-            self.expedition.statut = 'attribuee'
-            self.expedition.save()
-            Offre.objects.filter(expedition_id=self.expedition_id, statut='proposee').update(statut='refusee')
 
     def __str__(self):
         return f"Offre {self.id} - {self.expedition.reference} - {self.transporteur.raison_sociale}"

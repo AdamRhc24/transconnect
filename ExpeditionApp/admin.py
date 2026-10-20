@@ -56,6 +56,7 @@ class ExpeditionAdmin(admin.ModelAdmin):
         "ville_depart",
         "ville_arrivee",
         "statut",
+        "statut_badge",
         "date_souhaitee"
     )
     list_filter = ("statut", "ville_depart", "ville_arrivee", EnRetardFilter)
@@ -68,7 +69,7 @@ class ExpeditionAdmin(admin.ModelAdmin):
     date_hierarchy = "date_souhaitee"
     list_per_page = 25
 
-    autocomplete_fields = ("entreprise",)
+    # autocomplete_fields = ("entreprise",)
     readonly_fields = ("reference", "created_at", "updated_at")
     inlines = (OffreInline,)
 
@@ -108,7 +109,7 @@ class ExpeditionAdmin(admin.ModelAdmin):
             obj.get_statut_display(),
         )
 
-    @admin.action(description="Clôturer les expéditions sélectionnées")
+    @admin.action(description="Clôturer les expéditions sélectionnées",)
     def cloturer_expeditions(self, request, queryset):
         traitees = 0
         erreurs = 0

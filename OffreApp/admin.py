@@ -14,8 +14,8 @@ class OffreAdmin(admin.ModelAdmin):
         "vehicule",
         "prix",
         "delai_jours",
-        "statut_badge",
         "statut",
+        "statut_badge",
         "date_proposition",
     )
     list_filter = ("statut", "date_proposition")
@@ -29,7 +29,7 @@ class OffreAdmin(admin.ModelAdmin):
     date_hierarchy = "date_proposition"
     list_per_page = 25
 
-    autocomplete_fields = ("expedition", "transporteur", "vehicule")
+    # autocomplete_fields = ("expedition", "transporteur", "vehicule")
     readonly_fields = ("date_proposition", "created_at", "updated_at")
 
     fieldsets = (

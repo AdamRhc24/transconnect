@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator, MaxLengthValidator, RegexValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from datetime import datetime
+
 
 def validate_email(value):
     if not value:
@@ -27,32 +27,24 @@ class Utilisateur(AbstractUser):
         ('admin', 'Admin'),
         ('chargeur', 'Chargeur'),
         ('transporteur', 'Transporteur')
-    ], default='chargeur')
+    ])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    @classmethod
-    def _generate_entreprise_id(cls):
-        annee = datetime.now().year
-        prefix = f'{str(annee)[-2:]}entreprise'
-        dernier_user = cls.objects.filter(user_id_startswith=prefix).order_by('user_id').last()
-        compteur = int(dernier_user.user_id[-2:]) + 1 if dernier_user else 0
-        if compteur > 99:
-            raise ValidationError("Le nombre d'entreprises pour cette année a atteint la limite maximale de 99.")
-        return f'{prefix}{compteur:02d}'
-    @classmethod
-    def _generate_user_id(cls):
-        annee = datetime.now().year
-        prefix = f'{str(annee)[-2:]}user'
-        dernier_user = cls.objects.filter(user_id_startswith=prefix).order_by('user_id').last()
-        compteur = int(dernier_user.user_id[-2:]) + 1 if dernier_user else 0
-        if compteur > 99:
-            raise ValidationError("Le nombre d'utilisateurs pour cette année a atteint la limite maximale de 99.")
-        return f'{prefix}{compteur:02d}'
     def save(self, *args, **kwargs):
         if not self.user_id:
-            self.user_id = self._generate_user_id()
-        self.full_clean()
+            annee = timezone.now().strftime('%y')
+            prefix = f"{annee}user"
+            last_user = Utilisateur.objects.filter(user_id__startswith=prefix).order_by('-user_id').first()
+            if last_user:
+                try:
+                    last_num = int(last_user.user_id[-2:])
+                    next_num = (last_num + 1) % 100
+                except ValueError:
+                    next_num = 1
+            else:
+                next_num = 1
+            self.user_id = f"{prefix}{next_num:02d}"
         super().save(*args, **kwargs)
 
 
@@ -70,7 +62,7 @@ class Entreprise(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    gerant = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, related_name='entreprise')
+    utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, related_name='entreprise')
 
     def __str__(self):
         return self.raison_sociale
