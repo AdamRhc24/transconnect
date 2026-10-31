@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Expeditions List</h1>
+    <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Reference</th>
+                <th>Ville de départ</th>
+                <th>Ville d'arrivée</th>
+                <th>Poids (kg)</th>
+                <th>Date souhaitée</th>
+                <th>Statut</th>
+                <th>Entreprise</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for expedition in liste %}
+            <tr>
+                <td>{{ expedition.reference }}</td>
+                <td>{{ expedition.ville_depart }}</td>
+                <td>{{ expedition.ville_arrivee }}</td>
+                <td>{{ expedition.poids_kg }}</td>
+                <td>{{ expedition.date_souhaitee }}</td>
+                <td>{{ expedition.get_statut_display }}</td>
+                <td>{{ expedition.entreprise }}</td>
+                <td>
+                    <a href="{% url 'details' expedition.pk %}">Détails</a>
+                </td>
+                <td> <a href
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No expeditions</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</body>
+</html>
