@@ -270,11 +270,10 @@
                             </td>
                             <td>{{ expedition.entreprise }}</td>
                             <td class="actions">
+
                                 <a class="btn btn-view" href="{% url 'expedition_detail' expedition.pk %}">Details</a>
-                                <form method="post" action="{% url 'expedition_delete' expedition.pk %}">
-                                    <button type="submit" class="btn btn-delete">Supprimer</button>
-                                    {% csrf_token %}
-                                </form>
+                                {% csrf_token %}
+                                <a class="btn btn-view" href="{% url 'expedition_delete' expedition.pk %}">Supprimer</a>
                             </td>
                         </tr>
                         {% endfor %}
