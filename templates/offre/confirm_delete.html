@@ -1,0 +1,10 @@
+<p>
+    Etes-vous sur de vouloir supprimer cette offre #{{ offre.pk }} ?
+</p>
+
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger"> supprimer </button>
+    <a href="{% url 'offre_list' %}" class="btn btn-seceondary"> Annuler </a>
+</form>

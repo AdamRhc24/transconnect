@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offre #{{ offre.pk }} — Details</title>
+    <style>
+        :root {
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px 24px;
+        }
+        .container { max-width: 720px; margin: 0 auto; }
+        a.back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        a.back:hover { text-decoration: underline; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+        }
+        .card-header {
+            padding: 24px 28px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .card-header h1 { font-size: 1.4rem; font-weight: 700; }
+        .statut {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .statut-proposee { background: #dbeafe; color: #1d4ed8; }
+        .statut-acceptee { background: #dcfce7; color: #15803d; }
+        .statut-refusee  { background: #fee2e2; color: #b91c1c; }
+        .statut-retiree  { background: #f1f5f9; color: #64748b; }
+        .card-body { padding: 28px; }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .row:last-child { border-bottom: none; }
+        .row .label {
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            align-self: center;
+        }
+        .row .value { font-weight: 600; text-align: right; }
+        .card-footer {
+            padding: 20px 28px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .btn-edit { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); }
+        .btn-edit:hover { background: #e2e8f0; }
+        .btn-delete {
+            background: #fff;
+            border: 1px solid var(--border);
+            color: #dc2626;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-delete:hover { background: #fee2e2; }
+        .meta {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 0.78rem;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a class="back" href="{% url 'offre_list' %}">&larr; Retour a la liste</a>
+
+        <div class="card">
+            <div class="card-header">
+                <h1>Offre #{{ offre.pk }}</h1>
+                <span class="statut statut-{{ offre.statut }}">{{ offre.get_statut_display }}</span>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <span class="label">Expedition</span>
+                    <span class="value">{{ offre.expedition.reference }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">Transporteur</span>
+                    <span class="value">{{ offre.transporteur }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">Vehicule</span>
+                    <span class="value">{{ offre.vehicule|default:"—" }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">Prix</span>
+                    <span class="value">{{ offre.prix }} DT</span>
+                </div>
+                <div class="row">
+                    <span class="label">Delai</span>
+                    <span class="value">{{ offre.delai_jours }} jour{{ offre.delai_jours|pluralize:"s" }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">Date proposition</span>
+                    <span class="value">{{ offre.date_proposition|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <a class="btn btn-edit" href="{% url 'offre_update' offre.pk %}">Modifier</a>
+                <a class="btn btn-delete" href="{% url 'offre_delete' offre.pk %}">Supprimer</a>
+            </div>
+        </div>
+
+        <p class="meta">Creee le {{ offre.created_at|date:"d/m/Y H:i" }} &middot; Modifiee le {{ offre.updated_at|date:"d/m/Y H:i" }}</p>
+    </div>
+</body>
+</html>

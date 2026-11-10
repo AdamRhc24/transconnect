@@ -23,5 +23,6 @@ handler404 = 'ExpeditionApp.views.expedition_not_found'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('expedition/', include('ExpeditionApp.urls'))
+    path('expedition/', include('ExpeditionApp.urls')),
+    path('offre/', include('OffreApp.urls')),
 ]

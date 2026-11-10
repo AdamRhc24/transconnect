@@ -1,0 +1,13 @@
+<p>
+    Create an offre
+</p>
+
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="'btn btn-primary">Cree</button>
+    <a href="{% url 'offre_list' %}" class="btn btn-seceondary">Annuler</a>
+
+
+</form>

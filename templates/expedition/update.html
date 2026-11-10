@@ -1,0 +1,13 @@
+<p>
+    Modifier l'expedition {{ expedition.reference }}
+</p>
+
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="'btn btn-primary">Modifier</button>
+    <a href="{% url 'expedition_detail' expedition.pk %}" class="btn btn-seceondary">Annuler</a>
+
+
+</form>

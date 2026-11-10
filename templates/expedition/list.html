@@ -272,8 +272,8 @@
                             <td class="actions">
 
                                 <a class="btn btn-view" href="{% url 'expedition_detail' expedition.pk %}">Details</a>
-                                {% csrf_token %}
-                                <a class="btn btn-view" href="{% url 'expedition_delete' expedition.pk %}">Supprimer</a>
+                                <a class="btn btn-delete"
+                                    href="{% url 'expedition_delete' expedition.pk %}">Supprimer</a>
                             </td>
                         </tr>
                         {% endfor %}
