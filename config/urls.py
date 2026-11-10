@@ -17,6 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from ExpeditionApp.views import expedition_not_found
+
+handler404 = 'ExpeditionApp.views.expedition_not_found'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('expedition/', include('ExpeditionApp.urls'))

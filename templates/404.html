@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Expedition introuvable</title>
+    <style>
+        :root {
+            --bg: #f4f6fb;
+            --text: #1e293b;
+            --muted: #64748b;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+            padding: 48px 56px;
+            text-align: center;
+            max-width: 460px;
+            width: 100%;
+        }
+        .code {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+        .icon { font-size: 2.6rem; display: block; margin: 16px 0 8px; }
+        h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        @media (min-width: 720px) {
+            h1 { white-space: nowrap; }
+        }
+        p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin-bottom: 28px;
+        }
+        p strong { color: var(--text); }
+        .code-inline {
+            font-family: "Courier New", monospace;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        a.btn {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 10px 22px;
+            border-radius: 8px;
+            transition: background 0.15s ease;
+        }
+        a.btn:hover { background: var(--primary-dark); }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <span class="code">404</span>
+        <span class="icon">&#128260;</span>
+        <h1>Expedition introuvable</h1>
+        {% if reference %}
+        <p>L'expedition <span class="code-inline">{{ reference }}</span> n'existe pas ou a ete supprimee.</p>
+        {% else %}
+        <p>L'expedition demandee n'existe pas ou a ete supprimee.</p>
+        {% endif %}
+        <a class="btn" href="{% url 'list' %}">&larr; Retour a la liste</a>
+    </div>
+</body>
+</html>

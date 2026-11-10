@@ -1,0 +1,9 @@
+<p>
+    Etes-vous sur de vouloir supprimer cette expedition {{ expedition.reference }} ?
+</p>
+
+
+<form method="post">
+    <button type="submit" class="btn btn-danger"> supprimer </button>
+    <a href="{% url 'expedition_list' %}" class="btn btn-seceondary"> Annuler </a>
+</form>

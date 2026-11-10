@@ -1,3 +1,168 @@
-{{exp.reference}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ expedition.reference }} — Details Expedition</title>
+    <style>
+        :root {
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --border: #e2e8f0;
+            --danger: #dc2626;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px 24px;
+        }
+        .container { max-width: 720px; margin: 0 auto; }
+        a.back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        a.back:hover { text-decoration: underline; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+        }
+        .card-header {
+            padding: 24px 28px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .card-header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .ref {
+            font-family: "Courier New", monospace;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .statut {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .statut-publiee  { background: #dbeafe; color: #1d4ed8; }
+        .statut-attribuee{ background: #fef9c3; color: #a16207; }
+        .statut-en_cours { background: #e0e7ff; color: #4338ca; }
+        .statut-livree   { background: #dcfce7; color: #15803d; }
+        .statut-annulee  { background: #fee2e2; color: #b91c1c; }
+        .card-body { padding: 28px; }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .row:last-child { border-bottom: none; }
+        .row .label {
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            align-self: center;
+        }
+        .row .value { font-weight: 600; text-align: right; }
+        .row .route-value .arrow { color: var(--primary); font-weight: bold; margin: 0 6px; }
+        .card-footer {
+            padding: 20px 28px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+        }
+        .btn-delete {
+            background: #fff;
+            border: 1px solid var(--border);
+            color: var(--danger);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-delete:hover { background: #fee2e2; }
+        .meta {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 0.78rem;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a class="back" href="{% url 'list' %}">&larr; Retour a la liste</a>
 
-<a href="{% url 'list' %}">Back to list</a>
+        <div class="card">
+            <div class="card-header">
+                <h1>Expedition <span class="ref">{{ expedition.reference }}</span></h1>
+                <span class="statut statut-{{ expedition.statut }}">{{ expedition.get_statut_display }}</span>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <span class="label">Trajet</span>
+                    <span class="value route-value">
+                        {{ expedition.ville_depart }}<span class="arrow">&rarr;</span>{{ expedition.ville_arrivee }}
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="label">Poids</span>
+                    <span class="value">{{ expedition.poids_kg }} kg</span>
+                </div>
+                <div class="row">
+                    <span class="label">Date souhaitee</span>
+                    <span class="value">{{ expedition.date_souhaitee|date:"d/m/Y" }}</span>
+                </div>
+                {% if expedition.description %}
+                <div class="row">
+                    <span class="label">Description</span>
+                    <span class="value">{{ expedition.description }}</span>
+                </div>
+                {% endif %}
+                <div class="row">
+                    <span class="label">Entreprise</span>
+                    <span class="value">{{ expedition.entreprise }}</span>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <form method="post" action="{% url 'delete' expedition.pk %}" style="margin:0"
+                      onsubmit="return confirm('Supprimer cette expedition ?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete">Supprimer cette expedition</button>
+                </form>
+            </div>
+        </div>
+
+        <p class="meta">Creee le {{ expedition.created_at|date:"d/m/Y H:i" }} &middot; Modifiee le {{ expedition.updated_at|date:"d/m/Y H:i" }}</p>
+    </div>
+</body>
+</html>

@@ -1,48 +1,294 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Expeditions List</h1>
-    <table border="1" cellpadding="10" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Reference</th>
-                <th>Ville de départ</th>
-                <th>Ville d'arrivée</th>
-                <th>Poids (kg)</th>
-                <th>Date souhaitée</th>
-                <th>Statut</th>
-                <th>Entreprise</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+    <title>Expeditions — TransConnect</title>
+    <style>
+        :root {
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --border: #e2e8f0;
+            --danger: #dc2626;
+        }
 
-        <tbody>
-            {% for expedition in liste %}
-            <tr>
-                <td>{{ expedition.reference }}</td>
-                <td>{{ expedition.ville_depart }}</td>
-                <td>{{ expedition.ville_arrivee }}</td>
-                <td>{{ expedition.poids_kg }}</td>
-                <td>{{ expedition.date_souhaitee }}</td>
-                <td>{{ expedition.get_statut_display }}</td>
-                <td>{{ expedition.entreprise }}</td>
-                <td>
-                    <a href="{% url 'details' expedition.pk %}">Détails</a>
-                </td>
-                <td> <a href
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">No expeditions</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px 24px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        header h1 span {
+            color: var(--primary);
+        }
+
+        header p {
+            color: var(--muted);
+            margin-top: 4px;
+            font-size: 0.95rem;
+        }
+
+        .badge-count {
+            background: var(--primary);
+            color: #fff;
+            border-radius: 999px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 14px 18px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.92rem;
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .ref {
+            font-family: "Courier New", monospace;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .route {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .route .arrow {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .statut {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .statut-publiee {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .statut-attribuee {
+            background: #fef9c3;
+            color: #a16207;
+        }
+
+        .statut-en_cours {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .statut-livree {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .statut-annulee {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.15s ease;
+        }
+
+        .btn-view {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-view:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-delete {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--danger);
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .empty .icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        thead th:last-child,
+        td.actions {
+            text-align: right;
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            header h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Expeditions <span>/ Liste</span></h1>
+                <p>Toutes les expeditions</p>
+            </div>
+            <span class="badge-count">{{ expeditions|length }} expedition{{ expeditions|length|pluralize:"s" }}</span>
+        </header>
+
+        <div class="card">
+            {% if expeditions %}
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Trajet</th>
+                            <th>Poids (kg)</th>
+                            <th>Date souhaitee</th>
+                            <th>Statut</th>
+                            <th>Entreprise</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for expedition in expeditions %}
+                        <tr>
+                            <td class="ref">{{ expedition.reference }}</td>
+                            <td>
+                                <div class="route">
+                                    <span>{{ expedition.ville_depart }}</span>
+                                    <span class="arrow">&rarr;</span>
+                                    <span>{{ expedition.ville_arrivee }}</span>
+                                </div>
+                            </td>
+                            <td>{{ expedition.poids_kg }}</td>
+                            <td>{{ expedition.date_souhaitee|date:"d/m/Y" }}</td>
+                            <td>
+                                <span class="statut statut-{{ expedition.statut }}">
+                                    {{ expedition.get_statut_display }}</span>
+                            </td>
+                            <td>{{ expedition.entreprise }}</td>
+                            <td class="actions">
+                                <a class="btn btn-view" href="{% url 'expedition_detail' expedition.pk %}">Details</a>
+                                <form method="post" action="{% url 'expedition_delete' expedition.pk %}">
+                                    <button type="submit" class="btn btn-delete">Supprimer</button>
+                                    {% csrf_token %}
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty">
+                <span class="icon">&#128230;</span>
+                <p>Aucune expedition publiee pour le moment.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </body>
+
 </html>
